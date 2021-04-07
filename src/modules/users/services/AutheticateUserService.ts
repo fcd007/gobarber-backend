@@ -3,6 +3,7 @@ import { injectable, inject } from 'tsyringe';
 
 import authConfig from '@config/auth';
 import AppError from '@shared/errors/AppError';
+
 //SOLID - using dependency inversion
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import IHashProvider from '@modules/users/providers/HashProvider/models/IHashProvider';
@@ -21,19 +22,18 @@ interface IResponse {
 
 @injectable()
 class AutheticateUserService {
-  constructor (
+  constructor(
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
 
     @inject('HashProvider')
     private hashProvider: IHashProvider,
-    ) { }
+  ) {}
 
-  public async execute({ email, password }: IRequest): Promise<IResponse>{
-
+  public async execute({ email, password }: IRequest): Promise<IResponse> {
     const user = await this.usersRepository.findByEmail(email);
 
-    if(!user){
+    if (!user) {
       throw new AppError('Incorrect email/password combination', 401);
     }
 
@@ -45,7 +45,7 @@ class AutheticateUserService {
       user.password,
     );
 
-    if(!passwordMatched){
+    if (!passwordMatched) {
       throw new AppError('Incorrect email/password combination', 401);
     }
 
@@ -55,6 +55,7 @@ class AutheticateUserService {
       subject: user.id,
       expiresIn,
     });
+
     return {
       user,
       token,
