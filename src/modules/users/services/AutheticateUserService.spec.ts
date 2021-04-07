@@ -18,10 +18,7 @@ describe('AuthenticateUser', () => {
     fakeUsersRepository = new FakeUsersRepository();
     fakeHashProvider = new FakeHashProvider();
 
-    createUser = new CreateUserService(
-      fakeUsersRepository,
-      fakeHashProvider
-    );
+    createUser = new CreateUserService(fakeUsersRepository, fakeHashProvider);
 
     autheticateUser = new AutheticateUserService(
       fakeUsersRepository,
@@ -34,7 +31,7 @@ describe('AuthenticateUser', () => {
     const user = await createUser.execute({
       name: 'Claudeilton Dantas',
       email: 'fcd007@hotmail.com',
-      password: '123456789'
+      password: '123456789',
     });
 
     const response = await autheticateUser.execute({
@@ -47,25 +44,26 @@ describe('AuthenticateUser', () => {
   });
   //authenticate user not existing
   it('Shold not be able to authenticate with non existing  user', async () => {
-   await expect(
+    await expect(
       autheticateUser.execute({
         email: 'fcd007@hotmail.com',
         password: '123456789',
-      })).rejects.toBeInstanceOf(AppError)
+      }),
+    ).rejects.toBeInstanceOf(AppError);
   });
 
   it('Shold not be able to authenticate with wrong password', async () => {
-   await createUser.execute({
+    await createUser.execute({
       name: 'Claudeilton Dantas',
       email: 'fcd007@hotmail.com',
-      password: '123456789'
+      password: '123456789',
     });
 
     await expect(
       autheticateUser.execute({
         email: 'fcd007@hotmail.com',
         password: 'password-error:6789',
-      })
+      }),
     ).rejects.toBeInstanceOf(AppError);
   });
 });
